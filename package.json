@@ -8,12 +8,13 @@
   "scripts": {
     "dev": "dotenv -e .env.local -- sh -c \"NODE_OPTIONS='--import ./instrument.server.mjs' vite dev --port 3000\"",
     "generate-routes": "tsr generate",
-    "build": "vite build &amp;&amp; cp instrument.server.mjs .output/server",
+    "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
     "check": "prettier --check .",
-    "start": "node --import ./.output/server/instrument.server.mjs .output/server/index.mjs"
+    "start": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@faker-js/faker": "^10.3.0",
@@ -23,6 +24,8 @@
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/match-sorter-utils": "latest",
     "@tanstack/react-devtools": "latest",
+    "@tanstack/react-form": "^1.33.5",
+    "@tanstack/react-query": "^5.102.8",
     "@tanstack/react-router": "latest",
     "@tanstack/react-router-devtools": "latest",
     "@tanstack/react-start": "latest",
@@ -30,7 +33,10 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv-cli": "^11.0.0",
+    "graphql": "^17.0.2",
+    "graphql-request": "^7.4.0",
     "lucide-react": "^0.577.0",
+    "radix-ui": "^1.6.7",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwind-merge": "^3.0.2",

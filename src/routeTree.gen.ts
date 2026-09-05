@@ -10,11 +10,34 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CatalogRouteImport } from './routes/catalog'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardCustomersRouteImport } from './routes/dashboard.customers'
+import { Route as DashboardInventoryRouteImport } from './routes/dashboard.inventory'
+import { Route as DashboardOrdersRouteImport } from './routes/dashboard.orders'
+import { Route as DashboardProductsRouteImport } from './routes/dashboard.products'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogRoute = CatalogRouteImport.update({
+  id: '/catalog',
+  path: '/catalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -22,30 +45,111 @@ const McpRoute = McpRouteImport.update({
   path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardCustomersRoute = DashboardCustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardInventoryRoute = DashboardInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardOrdersRoute = DashboardOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardProductsRoute = DashboardProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/catalog': typeof CatalogRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/dashboard/customers': typeof DashboardCustomersRoute
+  '/dashboard/inventory': typeof DashboardInventoryRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
+  '/dashboard/products': typeof DashboardProductsRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/catalog': typeof CatalogRoute
+  '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/dashboard/customers': typeof DashboardCustomersRoute
+  '/dashboard/inventory': typeof DashboardInventoryRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
+  '/dashboard/products': typeof DashboardProductsRoute
+  '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/catalog': typeof CatalogRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/dashboard/customers': typeof DashboardCustomersRoute
+  '/dashboard/inventory': typeof DashboardInventoryRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
+  '/dashboard/products': typeof DashboardProductsRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/mcp'
+  fullPaths:
+    | '/'
+    | '/catalog'
+    | '/dashboard'
+    | '/login'
+    | '/mcp'
+    | '/dashboard/customers'
+    | '/dashboard/inventory'
+    | '/dashboard/orders'
+    | '/dashboard/products'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/mcp'
-  id: '__root__' | '/' | '/mcp'
+  to:
+    | '/'
+    | '/catalog'
+    | '/login'
+    | '/mcp'
+    | '/dashboard/customers'
+    | '/dashboard/inventory'
+    | '/dashboard/orders'
+    | '/dashboard/products'
+    | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/catalog'
+    | '/dashboard'
+    | '/login'
+    | '/mcp'
+    | '/dashboard/customers'
+    | '/dashboard/inventory'
+    | '/dashboard/orders'
+    | '/dashboard/products'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CatalogRoute: typeof CatalogRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
 }
 
@@ -58,6 +162,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/catalog': {
+      id: '/catalog'
+      path: '/catalog'
+      fullPath: '/catalog'
+      preLoaderRoute: typeof CatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mcp': {
       id: '/mcp'
       path: '/mcp'
@@ -65,11 +190,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/customers': {
+      id: '/dashboard/customers'
+      path: '/customers'
+      fullPath: '/dashboard/customers'
+      preLoaderRoute: typeof DashboardCustomersRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/inventory': {
+      id: '/dashboard/inventory'
+      path: '/inventory'
+      fullPath: '/dashboard/inventory'
+      preLoaderRoute: typeof DashboardInventoryRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/orders': {
+      id: '/dashboard/orders'
+      path: '/orders'
+      fullPath: '/dashboard/orders'
+      preLoaderRoute: typeof DashboardOrdersRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/products': {
+      id: '/dashboard/products'
+      path: '/products'
+      fullPath: '/dashboard/products'
+      preLoaderRoute: typeof DashboardProductsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
+interface DashboardRouteChildren {
+  DashboardCustomersRoute: typeof DashboardCustomersRoute
+  DashboardInventoryRoute: typeof DashboardInventoryRoute
+  DashboardOrdersRoute: typeof DashboardOrdersRoute
+  DashboardProductsRoute: typeof DashboardProductsRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardCustomersRoute: DashboardCustomersRoute,
+  DashboardInventoryRoute: DashboardInventoryRoute,
+  DashboardOrdersRoute: DashboardOrdersRoute,
+  DashboardProductsRoute: DashboardProductsRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CatalogRoute: CatalogRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  LoginRoute: LoginRoute,
   McpRoute: McpRoute,
 }
 export const routeTree = rootRouteImport
