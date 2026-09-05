@@ -10,7 +10,11 @@ import tailwindcss from '@tailwindcss/vite'
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [
-    devtools(),
+    devtools({
+      // Keep browser-extension and stale browser-session errors out of the
+      // server terminal. Application errors remain visible in DevTools.
+      consolePiping: { enabled: false },
+    }),
     paraglideVitePlugin({
       project: './project.inlang',
       outdir: './src/paraglide',
