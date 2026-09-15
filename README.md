@@ -1,3 +1,23 @@
+# Marketplace B2B — Design v1.0 demo
+
+Alur portofolio pengadaan kemasan: katalog → keranjang dua supplier → checkout → pembayaran simulasi → Supplier mengemas/mengirim → Buyer menerima.
+
+```bash
+npm ci
+npm run dev:demo
+```
+
+Buka `http://localhost:3000/demo`. Gunakan persona demo pada sidebar untuk melanjutkan sebagai Supplier A, Supplier B, atau Admin. Data fiktif tersimpan di memori server per sesi browser; restart menghapus data. Tidak ada transfer uang atau autentikasi produksi.
+
+- [Handoff desain, aturan bisnis dan acceptance criteria](docs/design-v1-handoff.md)
+- [Hasil pengujian dan gate yang masih terbuka](docs/validation.md)
+- `npm test`: domain + boundary server. `npm run test:http`: HTTP SSR. `npm run test:e2e`: skenario browser (memerlukan Chromium).
+- Production demo sengaja nonaktif kecuali server menetapkan `B2B_DEMO_ENABLED=true`.
+
+Dokumentasi template awal berikut dipertahankan sebagai referensi setup.
+
+---
+
 Welcome to your new TanStack Start app!
 
 # Getting Started

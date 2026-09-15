@@ -14,3 +14,6 @@ todos.json
 mcp-todos.json
 .env.local
 .env.*.local
+
+playwright-report/
+test-results/

@@ -1,0 +1,28 @@
+name: Purchase demo validation
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  purchase-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VITE_APP_NAME: Marketplace B2B
+      VITE_GRAPHQL_URL: http://localhost:4000/graphql
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npx eslint src/features/purchase src/routes/demo.tsx src/routes/catalog.tsx src/routes/index.tsx tests vitest.config.ts playwright.config.ts
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

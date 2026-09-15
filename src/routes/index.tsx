@@ -33,8 +33,8 @@ function Home() {
               dan persediaan dalam satu ruang kerja.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <Link to="/login" className={buttonVariants({ size: 'lg' })}>
-                Mulai sekarang <ArrowRight size={18} />
+              <Link to="/demo" className={buttonVariants({ size: 'lg' })}>
+                Coba demo pembelian <ArrowRight size={18} />
               </Link>
               <Link
                 to="/catalog"
@@ -44,7 +44,7 @@ function Home() {
               </Link>
             </div>
             <p className="mt-5 text-xs text-slate-500">
-              Pratinjau frontend · Data demonstrasi
+              Design v1.0 · Demo portofolio · Pembayaran simulasi
             </p>
           </div>
           <div className="rounded-3xl bg-emerald-900 p-8 text-white">

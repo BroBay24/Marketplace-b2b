@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
@@ -33,6 +34,11 @@ const CatalogRoute = CatalogRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/dashboard/customers': typeof DashboardCustomersRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
+  '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/dashboard/customers': typeof DashboardCustomersRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/dashboard/customers': typeof DashboardCustomersRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/'
     | '/catalog'
     | '/dashboard'
+    | '/demo'
     | '/login'
     | '/mcp'
     | '/dashboard/customers'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/catalog'
+    | '/demo'
     | '/login'
     | '/mcp'
     | '/dashboard/customers'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/'
     | '/catalog'
     | '/dashboard'
+    | '/demo'
     | '/login'
     | '/mcp'
     | '/dashboard/customers'
@@ -149,6 +161,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CatalogRoute: typeof CatalogRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
 }
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -252,6 +272,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CatalogRoute: CatalogRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
   McpRoute: McpRoute,
 }

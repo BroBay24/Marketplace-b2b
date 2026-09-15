@@ -1,0 +1,82 @@
+{
+  "date": "2026-09-15",
+  "fileKey": "SbyjMJzXLacghRNc79o6Mk",
+  "pageId": "263:4",
+  "count": 326,
+  "light": 163,
+  "dark": 163,
+  "problems": {
+    "broken": [],
+    "crossTheme": [],
+    "small": [],
+    "overflow": [],
+    "overlap": []
+  },
+  "checks": [
+    {
+      "from": "273:536",
+      "to": "274:352",
+      "pass": true
+    },
+    {
+      "from": "274:352",
+      "to": "305:1177",
+      "pass": true
+    },
+    {
+      "from": "305:1177",
+      "to": "305:1181",
+      "pass": true
+    },
+    {
+      "from": "305:1208",
+      "to": "305:1209",
+      "pass": true
+    },
+    {
+      "from": "305:1209",
+      "to": "305:1210",
+      "pass": true
+    },
+    {
+      "from": "305:1191",
+      "to": "305:1192",
+      "pass": true
+    },
+    {
+      "from": "381:5278",
+      "to": "381:5408",
+      "pass": true
+    },
+    {
+      "from": "381:5408",
+      "to": "381:5532",
+      "pass": true
+    },
+    {
+      "from": "379:4818",
+      "to": "379:4934",
+      "pass": true
+    },
+    {
+      "from": "379:5226",
+      "to": "305:1212",
+      "pass": true
+    },
+    {
+      "from": "305:1181",
+      "to": "380:5000",
+      "pass": true
+    },
+    {
+      "from": "305:1192",
+      "to": "380:5088",
+      "pass": true
+    },
+    {
+      "from": "348:4742",
+      "to": "380:5176",
+      "pass": true
+    }
+  ]
+}
