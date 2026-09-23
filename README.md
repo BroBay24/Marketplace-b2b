@@ -67,4 +67,4 @@ pnpm exec playwright install chromium
 
 Katalog hanya menampilkan produk aktif dari perusahaan aktif dengan supplier berstatus approved, inventory tersedia, dan tier harga yang memenuhi aturan publikasi. Respons publik tidak memuat email, alamat privat, atau dokumen verifikasi.
 
-Autentikasi, sesi, CRUD supplier, cart, checkout, pembayaran, fulfillment, RFQ, dan notifikasi belum menjadi fitur aktif. Status terbaru dan urutan pekerjaan terdapat di `DEVELOPMENT_SCOPE.md`; riwayat frontend awal terdapat di `BASELINE.md`; keputusan arsitektur terdapat di `docs/backend-foundation.md`.
+Autentikasi, sesi, CRUD supplier, cart, checkout, pembayaran, fulfillment, RFQ, dan notifikasi belum menjadi fitur aktif.

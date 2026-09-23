@@ -17,3 +17,5 @@ mcp-todos.json
 .local/
 test-results/
 playwright-report/
+*.md
+!/README.md
