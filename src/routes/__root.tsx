@@ -6,6 +6,8 @@ import { env } from '#/env'
 
 import appCss from '../styles.css?url'
 
+const catalogThemeScript = `(function(){try{var key='distribuhub-catalog-theme';var saved=localStorage.getItem(key);var dark=saved==='dark'||(!saved&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.catalogTheme=dark?'dark':'light'}catch(e){}})()`
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -32,9 +34,10 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: catalogThemeScript }} />
       </head>
       <body>
         {children}

@@ -17,7 +17,7 @@ function Login() {
           to="/"
           className="mb-8 flex justify-center gap-2 text-xl font-extrabold"
         >
-          <Boxes className="text-emerald-700" />
+          <Boxes className="text-primary" />
           {env.VITE_APP_NAME}
         </Link>
         <Card>
@@ -61,7 +61,7 @@ function Login() {
               <Button type="submit" className="w-full">
                 Masuk (demo)
               </Button>
-              <p role="status" className="text-sm text-emerald-800">
+              <p role="status" className="text-sm text-primary">
                 {message}
               </p>
             </form>

@@ -1,74 +1,45 @@
-import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { Plus } from 'lucide-react'
-import { products as initialProducts } from '#/data/products'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { ProductTable } from '#/components/products/product-table'
-import { ProductForm } from '#/components/products/product-form'
 import { PageHeading } from '#/components/page-heading'
-import { Button } from '#/components/ui/button'
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from '#/components/ui/sheet'
+import { buttonVariants } from '#/components/ui/button'
+import { listCatalog } from '#/server/catalog.functions'
 
 export const Route = createFileRoute('/dashboard/products')({
+  loader: () => listCatalog({ data: {} }),
   component: ProductsPage,
+  pendingComponent: () => <p role="status">Memuat katalog…</p>,
+  errorComponent: () => (
+    <p role="alert">Katalog belum dapat dimuat. Silakan muat ulang halaman.</p>
+  ),
 })
 function ProductsPage() {
-  const [products, setProducts] = useState(initialProducts)
-  const [open, setOpen] = useState(false)
-  const [message, setMessage] = useState('')
+  const { products } = Route.useLoaderData()
   return (
     <>
       <PageHeading
-        title="Manajemen produk"
-        description="Kelola katalog, harga, dan ketersediaan produk distributor Anda."
+        title="Produk kemasan"
+        description="Produk aktif dari pemasok terverifikasi."
       >
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button>
-              <Plus size={16} />
-              Tambah produk
-            </Button>
-          </SheetTrigger>
-          <SheetContent className="overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle>Tambah produk</SheetTitle>
-              <SheetDescription>
-                Lengkapi informasi produk baru.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="px-4 pb-6">
-              {open && (
-                <ProductForm
-                  existingSkus={products.map((p) => p.sku)}
-                  onAdd={(product) => {
-                    setProducts((current) => [...current, product])
-                    setMessage(
-                      `${product.name} berhasil ditambahkan ke data demo. Perubahan akan hilang saat meninggalkan atau memuat ulang halaman.`,
-                    )
-                    setOpen(false)
-                  }}
-                />
-              )}
-            </div>
-          </SheetContent>
-        </Sheet>
+        <Link to="/catalog" className={buttonVariants({ variant: 'outline' })}>
+          Buka katalog
+        </Link>
       </PageHeading>
-      <p className="text-sm text-slate-500">
-        Data demonstrasi · Belum terhubung ke API · Aksi edit belum tersedia
+      <p className="text-sm text-muted-foreground">
+        Pratinjau katalog publik. Pengelolaan produk tersedia setelah akses akun
+        pemasok diaktifkan.
       </p>
-      <p
-        role="status"
-        className="rounded-lg bg-emerald-50 text-sm text-emerald-900 empty:hidden [&:not(:empty)]:p-4"
-      >
-        {message}
-      </p>
-      <ProductTable products={products} />
+      <ProductTable
+        products={products.map((product) => ({
+          id: product.id,
+          sku: product.sku,
+          name: product.name,
+          category: product.category.name,
+          unit: product.unit,
+          price: product.basePriceIdr,
+          stock: product.availableStock,
+          status: 'active',
+        }))}
+      />
     </>
   )
 }

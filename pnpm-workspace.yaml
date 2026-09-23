@@ -1,3 +1,6 @@
 allowBuilds:
   '@sentry/cli': false
+  esbuild: true
   unrs-resolver: false
+overrides:
+  '@tanstack/router-core': 1.171.27

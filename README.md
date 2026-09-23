@@ -1,230 +1,70 @@
-Welcome to your new TanStack Start app!
+# DistribuHub Marketplace B2B
 
-# Getting Started
+Aplikasi modular TanStack Start untuk katalog pengadaan kemasan B2B. Fondasi saat ini menggunakan PostgreSQL, Drizzle, Zod, server functions, dan data demo persisten.
 
-To run this application:
+## Prasyarat
 
-```bash
-npm install
-npm run dev
+- Node.js 22.12 atau lebih baru
+- pnpm 12.3.4
+- PostgreSQL 16 atau lebih baru (`pg_config`, `initdb`, `pg_ctl`, `psql`, dan `createdb` tersedia)
+- Chromium Playwright untuk pengujian browser
+
+## Setup lokal
+
+```sh
+cp .env.example .env.local
+pnpm install --frozen-lockfile
+pnpm db:setup
+pnpm dev
 ```
 
-# Building For Production
+Buka `http://localhost:3000/catalog`. `pnpm db:setup` membuat cluster privat di `.local/postgres`, memakai Unix socket tanpa listener TCP, menjalankan migration, lalu mengisi fixture demo. Menjalankan ulang seed mempertahankan perubahan sah pada harga, tier, dan stok.
 
-To build this application for production:
+Perintah database:
 
-```bash
-npm run build
+```sh
+pnpm db:start
+pnpm db:status
+pnpm db:migrate
+pnpm db:seed
+pnpm db:stop
 ```
 
-## Styling
+`pnpm db:stop` hanya menghentikan PostgreSQL dan tidak menghapus data. `DATABASE_URL` bersifat server-only. Seed ke database yang dikonfigurasi melalui `DATABASE_URL` memerlukan `ALLOW_DEMO_SEED=true` dan selalu ditolak saat `NODE_ENV=production`.
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+## Pemeriksaan
 
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
-
-## Linting & Formatting
-
-
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
-
-```bash
-npm run lint
-npm run format
-npm run check
+```sh
+pnpm generate-routes
+pnpm test
+pnpm test:e2e
+pnpm typecheck
+pnpm lint
+pnpm check
+pnpm build
 ```
 
+`pnpm test` menjalankan unit test dan integration test serial pada cluster privat `.local/postgres-test` dengan database acak berawalan `marketplace_b2b_test_`; database tersebut dihapus setelah test. `pnpm test:e2e` memakai database unik pada cluster test yang sama dan server khusus port 3001. Restart test tidak menghentikan cluster demo `.local/postgres` atau memakai database `marketplace_demo`.
 
-## Shadcn
+Jika Chromium Playwright belum tersedia:
 
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
-
-```bash
-pnpm dlx shadcn@latest add button
+```sh
+pnpm exec playwright install chromium
 ```
 
+## Struktur utama
 
-## T3Env
+- `src/domain/`: kontrak katalog, validasi produk, dan aturan harga all-units.
+- `src/server/db/`: koneksi, schema, seed, dan guard seed.
+- `src/server/catalog.server.ts`: query katalog publik dan batas visibilitas.
+- `src/routes/catalog.tsx`: katalog; `src/routes/catalog_.$productId.tsx`: detail produk.
+- `drizzle/`: migration database berversi.
+- `tests/unit/`: test aturan domain dan guard.
+- `tests/integration/`: migration, constraint, seed, katalog, privasi, dan persistensi.
+- `e2e/`: test SSR dan interaksi browser.
 
-- You can use T3Env to add type safety to your environment variables.
-- Add Environment variables to the `src/env.mjs` file.
-- Use the environment variables in your code.
+## Batas implementasi
 
-### Usage
+Katalog hanya menampilkan produk aktif dari perusahaan aktif dengan supplier berstatus approved, inventory tersedia, dan tier harga yang memenuhi aturan publikasi. Respons publik tidak memuat email, alamat privat, atau dokumen verifikasi.
 
-```ts
-import { env } from "#/env";
-
-console.log(env.VITE_APP_TITLE);
-```
-
-
-
-
-
-# Paraglide i18n
-
-This add-on wires up ParaglideJS for localized routing and message formatting.
-
-- Messages live in `project.inlang/messages`.
-- URLs are localized through the Paraglide Vite plugin and router `rewrite` hooks.
-- Run the dev server or build to regenerate the `src/paraglide` outputs.
-
-
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+Autentikasi, sesi, CRUD supplier, cart, checkout, pembayaran, fulfillment, RFQ, dan notifikasi belum menjadi fitur aktif. Status terbaru dan urutan pekerjaan terdapat di `DEVELOPMENT_SCOPE.md`; riwayat frontend awal terdapat di `BASELINE.md`; keputusan arsitektur terdapat di `docs/backend-foundation.md`.

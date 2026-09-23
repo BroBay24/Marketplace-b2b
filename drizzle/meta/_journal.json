@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790118062926,
+      "tag": "0000_marketplace_foundation",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790118115833,
+      "tag": "0001_fsd_field_rules",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790163929576,
+      "tag": "0002_bizarre_bucky",
+      "breakpoints": true
+    }
+  ]
+}

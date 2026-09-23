@@ -1,5 +1,7 @@
 # DistribuHub frontend baseline
 
+> Dokumen ini adalah riwayat baseline frontend awal. Status implementasi terbaru dan urutan pekerjaan berikutnya tersedia di [DEVELOPMENT_SCOPE.md](DEVELOPMENT_SCOPE.md); arsitektur backend dijelaskan di [docs/backend-foundation.md](docs/backend-foundation.md).
+
 Baseline berjalan di scaffold TanStack Start yang sudah ada, tanpa backend atau autentikasi nyata.
 
 ## Catatan pekerjaan dari awal

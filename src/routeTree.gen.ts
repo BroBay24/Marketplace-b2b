@@ -14,6 +14,7 @@ import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as CatalogProductIdRouteImport } from './routes/catalog_.$productId'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardCustomersRouteImport } from './routes/dashboard.customers'
 import { Route as DashboardInventoryRouteImport } from './routes/dashboard.inventory'
@@ -43,6 +44,11 @@ const LoginRoute = LoginRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogProductIdRoute = CatalogProductIdRouteImport.update({
+  id: '/catalog_/$productId',
+  path: '/catalog/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/catalog/$productId': typeof CatalogProductIdRoute
   '/dashboard/customers': typeof DashboardCustomersRoute
   '/dashboard/inventory': typeof DashboardInventoryRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/catalog': typeof CatalogRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/catalog/$productId': typeof CatalogProductIdRoute
   '/dashboard/customers': typeof DashboardCustomersRoute
   '/dashboard/inventory': typeof DashboardInventoryRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/catalog_/$productId': typeof CatalogProductIdRoute
   '/dashboard/customers': typeof DashboardCustomersRoute
   '/dashboard/inventory': typeof DashboardInventoryRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/mcp'
+    | '/catalog/$productId'
     | '/dashboard/customers'
     | '/dashboard/inventory'
     | '/dashboard/orders'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/catalog'
     | '/login'
     | '/mcp'
+    | '/catalog/$productId'
     | '/dashboard/customers'
     | '/dashboard/inventory'
     | '/dashboard/orders'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/mcp'
+    | '/catalog_/$productId'
     | '/dashboard/customers'
     | '/dashboard/inventory'
     | '/dashboard/orders'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
+  CatalogProductIdRoute: typeof CatalogProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalog_/$productId': {
+      id: '/catalog_/$productId'
+      path: '/catalog/$productId'
+      fullPath: '/catalog/$productId'
+      preLoaderRoute: typeof CatalogProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/': {
@@ -254,6 +274,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
   McpRoute: McpRoute,
+  CatalogProductIdRoute: CatalogProductIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,0 +1,942 @@
+{
+  "id": "a8c798a6-ae92-4512-850a-f8ddd089818a",
+  "prevId": "bfd798f2-e244-4ad0-8010-aca75dc2ca11",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.addresses": {
+      "name": "addresses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "company_id": {
+          "name": "company_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_by_user_id": {
+          "name": "created_by_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recipient_name": {
+          "name": "recipient_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "street": {
+          "name": "street",
+          "type": "varchar(250)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "city": {
+          "name": "city",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "province": {
+          "name": "province",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "postal_code": {
+          "name": "postal_code",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_default": {
+          "name": "is_default",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "archived_at": {
+          "name": "archived_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "addresses_one_default_per_company": {
+          "name": "addresses_one_default_per_company",
+          "columns": [
+            {
+              "expression": "company_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"addresses\".\"is_default\" AND \"addresses\".\"archived_at\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "addresses_company_id_companies_id_fk": {
+          "name": "addresses_company_id_companies_id_fk",
+          "tableFrom": "addresses",
+          "tableTo": "companies",
+          "columnsFrom": ["company_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "addresses_creator_company_fk": {
+          "name": "addresses_creator_company_fk",
+          "tableFrom": "addresses",
+          "tableTo": "users",
+          "columnsFrom": ["created_by_user_id", "company_id"],
+          "columnsTo": ["id", "company_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "addresses_postal_code_valid": {
+          "name": "addresses_postal_code_valid",
+          "value": "\"addresses\".\"postal_code\" ~ '^[0-9]{5}$'"
+        },
+        "addresses_phone_valid": {
+          "name": "addresses_phone_valid",
+          "value": "\"addresses\".\"phone\" ~ '^[+]?[0-9]{8,15}$'"
+        },
+        "addresses_required_text": {
+          "name": "addresses_required_text",
+          "value": "length(trim(\"addresses\".\"label\")) >= 2 AND length(trim(\"addresses\".\"recipient_name\")) >= 2 AND length(trim(\"addresses\".\"street\")) >= 10 AND length(trim(\"addresses\".\"city\")) > 0 AND length(trim(\"addresses\".\"province\")) > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.categories": {
+      "name": "categories",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "categories_slug_unique": {
+          "name": "categories_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": ["slug"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "categories_name_not_blank": {
+          "name": "categories_name_not_blank",
+          "value": "length(trim(\"categories\".\"name\")) > 0"
+        },
+        "categories_slug_valid": {
+          "name": "categories_slug_valid",
+          "value": "\"categories\".\"slug\" ~ '^[a-z0-9]+(-[a-z0-9]+)*$'"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.companies": {
+      "name": "companies",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "responsible_person": {
+          "name": "responsible_person",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(1000)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "company_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "company_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "city": {
+          "name": "city",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "companies_id_kind_unique": {
+          "name": "companies_id_kind_unique",
+          "nullsNotDistinct": false,
+          "columns": ["id", "kind"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "companies_name_valid": {
+          "name": "companies_name_valid",
+          "value": "length(trim(\"companies\".\"name\")) >= 3"
+        },
+        "companies_responsible_person_valid": {
+          "name": "companies_responsible_person_valid",
+          "value": "length(trim(\"companies\".\"responsible_person\")) >= 2"
+        },
+        "companies_city_not_blank": {
+          "name": "companies_city_not_blank",
+          "value": "length(trim(\"companies\".\"city\")) > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.inventory": {
+      "name": "inventory",
+      "schema": "",
+      "columns": {
+        "product_id": {
+          "name": "product_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "supplier_company_id": {
+          "name": "supplier_company_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "on_hand": {
+          "name": "on_hand",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "reserved": {
+          "name": "reserved",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "inventory_product_supplier_fk": {
+          "name": "inventory_product_supplier_fk",
+          "tableFrom": "inventory",
+          "tableTo": "products",
+          "columnsFrom": ["product_id", "supplier_company_id"],
+          "columnsTo": ["id", "supplier_company_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "inventory_quantities_valid": {
+          "name": "inventory_quantities_valid",
+          "value": "\"inventory\".\"on_hand\" >= 0 AND \"inventory\".\"reserved\" >= 0 AND \"inventory\".\"reserved\" <= \"inventory\".\"on_hand\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.product_price_tiers": {
+      "name": "product_price_tiers",
+      "schema": "",
+      "columns": {
+        "product_id": {
+          "name": "product_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "supplier_company_id": {
+          "name": "supplier_company_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "minimum_quantity": {
+          "name": "minimum_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unit_price_idr": {
+          "name": "unit_price_idr",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "tiers_product_supplier_fk": {
+          "name": "tiers_product_supplier_fk",
+          "tableFrom": "product_price_tiers",
+          "tableTo": "products",
+          "columnsFrom": ["product_id", "supplier_company_id"],
+          "columnsTo": ["id", "supplier_company_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "product_price_tiers_product_id_minimum_quantity_pk": {
+          "name": "product_price_tiers_product_id_minimum_quantity_pk",
+          "columns": ["product_id", "minimum_quantity"]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "tiers_quantity_positive": {
+          "name": "tiers_quantity_positive",
+          "value": "\"product_price_tiers\".\"minimum_quantity\" > 0"
+        },
+        "tiers_price_positive": {
+          "name": "tiers_price_positive",
+          "value": "\"product_price_tiers\".\"unit_price_idr\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.products": {
+      "name": "products",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "supplier_company_id": {
+          "name": "supplier_company_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "supplier_kind": {
+          "name": "supplier_kind",
+          "type": "company_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'supplier'"
+        },
+        "created_by_user_id": {
+          "name": "created_by_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "creator_role": {
+          "name": "creator_role",
+          "type": "user_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'supplier'"
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sku": {
+          "name": "sku",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(160)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(140)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(4000)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unit": {
+          "name": "unit",
+          "type": "varchar(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pcs'"
+        },
+        "minimum_order_quantity": {
+          "name": "minimum_order_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity_step": {
+          "name": "quantity_step",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "base_price_idr": {
+          "name": "base_price_idr",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "varchar(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'IDR'"
+        },
+        "status": {
+          "name": "status",
+          "type": "product_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'draft'"
+        },
+        "image_path": {
+          "name": "image_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "products_catalog_idx": {
+          "name": "products_catalog_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "category_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "products_category_id_categories_id_fk": {
+          "name": "products_category_id_categories_id_fk",
+          "tableFrom": "products",
+          "tableTo": "categories",
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "products_supplier_company_fk": {
+          "name": "products_supplier_company_fk",
+          "tableFrom": "products",
+          "tableTo": "companies",
+          "columnsFrom": ["supplier_company_id", "supplier_kind"],
+          "columnsTo": ["id", "kind"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "products_creator_company_role_fk": {
+          "name": "products_creator_company_role_fk",
+          "tableFrom": "products",
+          "tableTo": "users",
+          "columnsFrom": [
+            "created_by_user_id",
+            "supplier_company_id",
+            "creator_role"
+          ],
+          "columnsTo": ["id", "company_id", "role"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "products_slug_unique": {
+          "name": "products_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": ["slug"]
+        },
+        "products_supplier_sku_unique": {
+          "name": "products_supplier_sku_unique",
+          "nullsNotDistinct": false,
+          "columns": ["supplier_company_id", "sku"]
+        },
+        "products_id_supplier_unique": {
+          "name": "products_id_supplier_unique",
+          "nullsNotDistinct": false,
+          "columns": ["id", "supplier_company_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "products_supplier_only": {
+          "name": "products_supplier_only",
+          "value": "\"products\".\"supplier_kind\" = 'supplier' AND \"products\".\"creator_role\" = 'supplier'"
+        },
+        "products_sku_valid": {
+          "name": "products_sku_valid",
+          "value": "\"products\".\"sku\" ~ '^[A-Z0-9-]{1,64}$'"
+        },
+        "products_slug_valid": {
+          "name": "products_slug_valid",
+          "value": "\"products\".\"slug\" ~ '^[a-z0-9]+(-[a-z0-9]+)*$'"
+        },
+        "products_required_text": {
+          "name": "products_required_text",
+          "value": "length(trim(\"products\".\"name\")) >= 5 AND length(trim(\"products\".\"description\")) > 0 AND \"products\".\"unit\" = 'pcs'"
+        },
+        "products_quantity_valid": {
+          "name": "products_quantity_valid",
+          "value": "\"products\".\"minimum_order_quantity\" > 0 AND \"products\".\"quantity_step\" > 0 AND \"products\".\"minimum_order_quantity\" % \"products\".\"quantity_step\" = 0"
+        },
+        "products_price_positive": {
+          "name": "products_price_positive",
+          "value": "\"products\".\"base_price_idr\" > 0"
+        },
+        "products_currency_idr": {
+          "name": "products_currency_idr",
+          "value": "\"products\".\"currency\" = 'IDR'"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.supplier_verifications": {
+      "name": "supplier_verifications",
+      "schema": "",
+      "columns": {
+        "company_id": {
+          "name": "company_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "company_kind": {
+          "name": "company_kind",
+          "type": "company_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'supplier'"
+        },
+        "status": {
+          "name": "status",
+          "type": "verification_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending_review'"
+        },
+        "document_reference": {
+          "name": "document_reference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reviewed_by_user_id": {
+          "name": "reviewed_by_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reviewer_role": {
+          "name": "reviewer_role",
+          "type": "user_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'admin'"
+        },
+        "reviewed_at": {
+          "name": "reviewed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "review_note": {
+          "name": "review_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "verifications_supplier_company_fk": {
+          "name": "verifications_supplier_company_fk",
+          "tableFrom": "supplier_verifications",
+          "tableTo": "companies",
+          "columnsFrom": ["company_id", "company_kind"],
+          "columnsTo": ["id", "kind"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "verifications_admin_reviewer_fk": {
+          "name": "verifications_admin_reviewer_fk",
+          "tableFrom": "supplier_verifications",
+          "tableTo": "users",
+          "columnsFrom": ["reviewed_by_user_id", "reviewer_role"],
+          "columnsTo": ["id", "role"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "verifications_supplier_only": {
+          "name": "verifications_supplier_only",
+          "value": "\"supplier_verifications\".\"company_kind\" = 'supplier'"
+        },
+        "verifications_admin_only": {
+          "name": "verifications_admin_only",
+          "value": "\"supplier_verifications\".\"reviewer_role\" = 'admin'"
+        },
+        "verifications_review_recorded": {
+          "name": "verifications_review_recorded",
+          "value": "\"supplier_verifications\".\"status\" = 'pending_review' OR (\"supplier_verifications\".\"reviewed_by_user_id\" IS NOT NULL AND \"supplier_verifications\".\"reviewed_at\" IS NOT NULL AND \"supplier_verifications\".\"review_note\" IS NOT NULL AND length(trim(\"supplier_verifications\".\"review_note\")) > 0)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "company_id": {
+          "name": "company_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "company_kind": {
+          "name": "company_kind",
+          "type": "company_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "user_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "company_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(254)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "columns": [
+            {
+              "expression": "lower(\"email\")",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "users_company_kind_fk": {
+          "name": "users_company_kind_fk",
+          "tableFrom": "users",
+          "tableTo": "companies",
+          "columnsFrom": ["company_id", "company_kind"],
+          "columnsTo": ["id", "kind"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_id_role_unique": {
+          "name": "users_id_role_unique",
+          "nullsNotDistinct": false,
+          "columns": ["id", "role"]
+        },
+        "users_id_company_unique": {
+          "name": "users_id_company_unique",
+          "nullsNotDistinct": false,
+          "columns": ["id", "company_id"]
+        },
+        "users_id_company_role_unique": {
+          "name": "users_id_company_role_unique",
+          "nullsNotDistinct": false,
+          "columns": ["id", "company_id", "role"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "users_role_company_matches": {
+          "name": "users_role_company_matches",
+          "value": "(\"users\".\"role\" = 'admin' AND \"users\".\"company_id\" IS NULL AND \"users\".\"company_kind\" IS NULL)\n        OR (\"users\".\"role\" = 'buyer' AND \"users\".\"company_id\" IS NOT NULL AND \"users\".\"company_kind\" IS NOT NULL AND \"users\".\"company_kind\" = 'buyer')\n        OR (\"users\".\"role\" = 'supplier' AND \"users\".\"company_id\" IS NOT NULL AND \"users\".\"company_kind\" IS NOT NULL AND \"users\".\"company_kind\" = 'supplier')"
+        },
+        "users_name_not_blank": {
+          "name": "users_name_not_blank",
+          "value": "length(trim(\"users\".\"name\")) > 0"
+        },
+        "users_email_normalized": {
+          "name": "users_email_normalized",
+          "value": "\"users\".\"email\" = lower(trim(\"users\".\"email\")) AND \"users\".\"email\" LIKE '%_@_%._%'"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.company_kind": {
+      "name": "company_kind",
+      "schema": "public",
+      "values": ["buyer", "supplier"]
+    },
+    "public.company_status": {
+      "name": "company_status",
+      "schema": "public",
+      "values": ["active", "suspended"]
+    },
+    "public.product_status": {
+      "name": "product_status",
+      "schema": "public",
+      "values": ["draft", "active", "archived"]
+    },
+    "public.user_role": {
+      "name": "user_role",
+      "schema": "public",
+      "values": ["buyer", "supplier", "admin"]
+    },
+    "public.verification_status": {
+      "name": "verification_status",
+      "schema": "public",
+      "values": ["pending_review", "approved", "changes_requested"]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

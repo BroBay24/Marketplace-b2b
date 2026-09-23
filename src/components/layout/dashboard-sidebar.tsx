@@ -25,7 +25,7 @@ export function DashboardSidebar({ onNavigate }: { onNavigate?: () => void }) {
         onClick={onNavigate}
         className="mb-12 flex items-center gap-3 text-xl font-extrabold tracking-tight"
       >
-        <span className="rounded-xl bg-emerald-700 p-2 text-white">
+        <span className="rounded-xl bg-primary p-2 text-primary-foreground">
           <Boxes size={24} />
         </span>
         {env.VITE_APP_NAME}
@@ -40,9 +40,9 @@ export function DashboardSidebar({ onNavigate }: { onNavigate?: () => void }) {
             to={to}
             onClick={onNavigate}
             activeOptions={{ exact: to === '/dashboard' }}
-            className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-slate-600 hover:bg-emerald-50"
+            className="flex min-h-12 items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent"
             activeProps={{
-              className: 'bg-emerald-50 !text-emerald-800 font-bold',
+              className: 'bg-accent !text-primary font-bold',
               'aria-current': 'page',
             }}
           >
@@ -51,9 +51,9 @@ export function DashboardSidebar({ onNavigate }: { onNavigate?: () => void }) {
           </Link>
         ))}
       </nav>
-      <div className="mt-auto rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm">
-        <p className="font-semibold text-emerald-900">Bisnis tumbuh bersama.</p>
-        <p className="mt-2 leading-relaxed text-emerald-800">
+      <div className="mt-auto rounded-2xl border bg-accent p-4 text-sm">
+        <p className="font-semibold text-foreground">Bisnis tumbuh bersama.</p>
+        <p className="mt-2 leading-relaxed text-muted-foreground">
           Satu tempat untuk mengelola kebutuhan distribusi Anda.
         </p>
         <Link
